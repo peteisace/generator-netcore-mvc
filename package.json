@@ -12,5 +12,10 @@
   "dependencies": {
     "yeoman-generator": "^0.21.2"
   },
-  "author": "pcoleman"
+  "author": "pcoleman",
+  "devDependencies": {
+    "bower": "^1.7.9",
+    "gulp": "^3.9.1",
+    "mkdirp": "^0.5.1"
+  }
 }

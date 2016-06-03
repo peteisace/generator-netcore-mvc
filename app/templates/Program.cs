@@ -1,17 +1,21 @@
 using Microsoft.AspNetCore.Hosting;
+using System.IO;
 
 namespace <%= namespace %>.<%= appName%>
 {
-    public static void Main(string[] args)
+    public static class Program
     {
-        // instantiate web host.
-        var host = new WebHostBuilder()
-            .UseKestrel()
-            .UseStartup<Startup>()
-            .UseContentRoot(Directory.GetCurrentDirectory()
-            .Build();
+        public static void Main(string[] args)
+        {
+            // instantiate web host.
+            var host = new WebHostBuilder()
+                .UseKestrel()
+                .UseStartup<Startup>()
+                .UseContentRoot(Directory.GetCurrentDirectory())
+                .Build();
             
-        // run it :)
-        host.Run();            
+            // run it :)
+            host.Run();                                   
+        }
     }
 }

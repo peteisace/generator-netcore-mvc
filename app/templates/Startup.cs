@@ -10,23 +10,23 @@ namespace <%= namespace %>.<%= appName%>
         // Initialize the services
         public void ConfigureServices(IServiceCollection services)
         {
-            
+            services.AddMvc();            
         }
         
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             // setup the error page
             // TODO: factor in the environments; this is useful just for dev.
-            app.UseDeveloperErrorPage();
+            app.UseDeveloperExceptionPage();
             
             // setup mvc to use default root.
             app.UseMvc(routes =>
             {
                routes.MapRoute(
                    name: "default",
-                   template: "{controller=Home/action=Index}"
+                   template: "{controller=Home}/{action=Index}"                   
                );
-            }); 
+            });                       
         }
     }
 }
