@@ -6,12 +6,17 @@ module.exports = generators.Base.extend({
           
     // start with prompts
     prompting: function() {
+        
+        // will set the event.
+        var done = this.async();
                         
-        return this.prompt([
+        // inputs from user.                      
+        var prompts = [
             {
                 type: 'input',
                 name: 'namespace',
-                message: 'Please enter the namespace of your app'                
+                message: 'Please enter the namespace of your app',
+                default: 'com.dotnet.application'              
             },
             {
                 type: 'input',
@@ -19,15 +24,20 @@ module.exports = generators.Base.extend({
                 message: 'Please enter the name of your app',
                 default: 'myApp'
             }
-        ].then(function(answers) {
-            // now we have the answers, let's do something with it, start creating the files.
-            var message = "Now creating files required for ".concat(answers.namespace).concat(".").concat(answers.name);
-            this.log(message);
-            
-            // now we need to set variables.      
-            this.props = answers;
-                                           
-        }.bind(this)));   
+        ];
+        
+        // so now prompt
+        this.prompt(
+            prompts,
+            function(answers) {
+                
+                // set our variables
+                this.name = answers.name;
+                this.namespace = answers.namespace;
+                
+                // and signal that we're done.
+                done();                
+            }.bind(this));                        
     },
     
     writing: {
@@ -41,13 +51,22 @@ module.exports = generators.Base.extend({
         application: function() {
             // this is where we'll write the templates.
             
-            // let's start with program.cs
+            // let's start with program.cs          
+            console.log("Creating required files");
+            console.log("... creating directory 'src'");
+            
+            this.mkdirp('src');
+            
+            // create our Program.cs
+            console.log("Creating starter files, main entry point and configuration file:");
             this.fs.copyTpl(
                 this.templatePath('Program.cs'),
-                this.destinationPath('src/Program.cs'), {
-                   
-                }
-            );   
+                this.destinationPath('src/Program.cs'),
+                {
+                    appName: this.name,
+                    namespace: this.namespace      
+                }                
+            );
         }                                    
     }
 });
