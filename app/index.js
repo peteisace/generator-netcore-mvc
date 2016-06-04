@@ -1,13 +1,15 @@
 'use strict';
 
 var generators = require('yeoman-generator');
-var mkdirp = require('mkdirp');
+var requirejs = require('requirejs');
+var Tree = require('./tree.js');
+var FileSystem = require('./fileSystem.js');
 
 module.exports = generators.Base.extend({
           
     // start with prompts
     prompting: function() {
-        
+                                
         // will set the event.
         var done = this.async();
                         
@@ -35,7 +37,7 @@ module.exports = generators.Base.extend({
                 name: 'canInstallGulp',
                 message: 'Do you wish to install gulp and create default gulpfile?'
             }
-        ];
+        ];                       
         
         // so now prompt
         this.prompt(
@@ -58,13 +60,13 @@ module.exports = generators.Base.extend({
         // we need to set up the basic files.
             
         config: function() {
-            
+                                      
             console.log("Configuring project.json");
               
             // copy the file across.
             this.fs.copy(
                 this.templatePath('project.json'),
-                this.destinationPath('src/project.json')
+                this.destinationPath('project.json')
             );              
         },
         
@@ -83,11 +85,10 @@ module.exports = generators.Base.extend({
               {
                 name: this.name,
                 main: 'index.js',
-                ignore: [
-                    "**/.*",
-                    "node_modules",
+                ignore: [                    
+                    "src/node_modules",
                     "bower_components",
-                    "wwwroot/components",    
+                    "src/wwwroot/lib",    
                     "test",
                     "tests"
                 ],
@@ -116,8 +117,7 @@ module.exports = generators.Base.extend({
           }
           
           if(this.dependentModules.length > 0) {
-              
-              mkdirp('node_modules');
+                            
               this.fs.copyTpl(
                   this.templatePath('package.json'),
                   this.destinationPath('package.json'), {
@@ -127,54 +127,41 @@ module.exports = generators.Base.extend({
               
           }            
         },
-        
+                        
         application: function() {
             // this is where we'll write the templates.
             
-            // let's start with program.cs          
-            console.log("Creating required files");
-            console.log("... creating directory 'src'");
+            // file system
+            var fileSystem = new FileSystem(this.fs);
             
-            // create the directory
-            mkdirp('src');
-            
+            // create directory first.
+            var directories = new Tree(fileSystem);
+            directories.createStructure(fileSystem);
+                                                                        
             var tempVariables = { appName: this.name, namespace: this.namespace };
             
-            // create our Program.cs
-            console.log("Creating starter files, main entry point and configuration file:");
-            this.fs.copyTpl(
-                this.templatePath('Program.cs'),
-                this.destinationPath('src/Program.cs'),
-                tempVariables                
-            );
+            var required = [
+              "Program.cs",
+              "Startup.cs",
+              "Controllers/HomeController.cs",
+              "Views/Index.cshtml"  
+            ];
+                                    
+            required.forEach(function(value, index, array) {
+               
+               fileSystem.createTemplate(
+                   this.templatePath(value),
+                   this.destinationPath('src/'.concat(value)),
+                   tempVariables
+               );
+                
+            }.bind(this));      
             
-            // create startup class.
-            this.fs.copyTpl(
-                this.templatePath('Startup.cs'),
-                this.destinationPath('src/Startup.cs'),
+            // handle the git ignore
+            fileSystem.createTemplate(
+                this.templatePath('gitignore'),
+                this.destinationPath('.gitignore'),
                 tempVariables
-            );
-            
-            // we also need to create wwwroot and the actual views etc.
-            mkdirp('wwwroot');
-            mkdirp('src/Controllers');
-            mkdirp('src/Views');
-            mkdirp('src/Views/Home');
-            mkdirp('wwwroot/scripts');
-            mkdirp('wwwroot/css');
-            mkdirp('wwwroot/images');
-            
-            // let's create the home controller - basic entry point
-            this.fs.copyTpl(
-                this.templatePath('Controllers/HomeController.cs'),
-                this.destinationPath('src/Controllers/HomeController.cs'),
-                tempVariables
-            );
-            
-            // and finally, our custom views
-            this.fs.copy(
-                this.templatePath('Views/Index.cshtml'),
-                this.destinationPath('src/Views/Home/Index.cshtml')
             );
         }                                    
     },
