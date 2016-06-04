@@ -1,6 +1,6 @@
 {
   "name": "generator-netcore-mvc",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "A basic yeoman generator that will setup an MVC site with a default directory.",
   "keywords": [
     "yeoman-generator",

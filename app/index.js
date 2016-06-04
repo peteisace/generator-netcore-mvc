@@ -80,7 +80,7 @@ module.exports = generators.Base.extend({
               this.dependentModules.push('bower');
               
               // let's write the bowerrc
-              var bowerConfig = { directory: 'components' };
+              var bowerConfig = { directory: 'src/wwwroot/lib' };
               var bowerInstall = 
               {
                 name: this.name,
@@ -169,8 +169,8 @@ module.exports = generators.Base.extend({
     install: function() {
         
         console.log("running npm install now...")              
-     
+          
         // install the stuff
-        this.npmInstall(this.dependentModules, { 'saveDev': true });           
+        this.npmInstall(this.dependentModules, { 'saveDev': true });                           
     }
 });
