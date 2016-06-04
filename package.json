@@ -16,6 +16,7 @@
   "devDependencies": {
     "bower": "^1.7.9",
     "gulp": "^3.9.1",
+    "gulp-livereload": "^3.8.1",
     "mkdirp": "^0.5.1",
     "requirejs": "^2.2.0"
   }

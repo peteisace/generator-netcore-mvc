@@ -10,6 +10,8 @@ Tree.prototype.createStructure = function(bob) {
     var directories = [
         "src",
         "src/Views",
+        "src/Views/Home",
+        "src/Views/Shared",
         "src/wwwroot",
         "src/wwwroot/css",
         "src/wwwroot/scripts",

@@ -66,7 +66,7 @@ module.exports = generators.Base.extend({
             // copy the file across.
             this.fs.copy(
                 this.templatePath('project.json'),
-                this.destinationPath('project.json')
+                this.destinationPath('src/project.json')
             );              
         },
         
@@ -98,8 +98,8 @@ module.exports = generators.Base.extend({
               };
               
               // write the files.
-              this.fs.writeJSON('bower.json', bowerInstall);
-              this.fs.writeJSON('.bowerrc', bowerConfig);
+              this.fs.writeJSON('src/bower.json', bowerInstall);
+              this.fs.writeJSON('src/.bowerrc', bowerConfig);
               
           }
           
@@ -112,7 +112,7 @@ module.exports = generators.Base.extend({
               // so then let's create our default gulp file.
               this.fs.copyTpl(
                   this.templatePath('gulpfile.js'),
-                  this.destinationPath('gulpfile.js')
+                  this.destinationPath('src/gulpfile.js')
               );           
           }
           
@@ -120,7 +120,7 @@ module.exports = generators.Base.extend({
                             
               this.fs.copyTpl(
                   this.templatePath('package.json'),
-                  this.destinationPath('package.json'), {
+                  this.destinationPath('src/package.json'), {
                     appName: this.name      
                   }
               );
@@ -144,7 +144,7 @@ module.exports = generators.Base.extend({
               "Program.cs",
               "Startup.cs",
               "Controllers/HomeController.cs",
-              "Views/Index.cshtml"  
+              "Views/Home/Index.cshtml"  
             ];
                                     
             required.forEach(function(value, index, array) {
@@ -160,7 +160,7 @@ module.exports = generators.Base.extend({
             // handle the git ignore
             fileSystem.createTemplate(
                 this.templatePath('gitignore'),
-                this.destinationPath('.gitignore'),
+                this.destinationPath('src/.gitignore'),
                 tempVariables
             );
         }                                    
