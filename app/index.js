@@ -141,17 +141,19 @@ module.exports = generators.Base.extend({
             var tempVariables = { appName: this.name, namespace: this.namespace };
             
             var required = [
-              "Program.cs",
-              "Startup.cs",
-              "Controllers/HomeController.cs",
-              "Views/Home/Index.cshtml"  
+              { file: "Program.cs", prefix: "src/" },
+              { file: "Startup.cs", prefix: "src/" },
+              { file: "Controllers/HomeController.cs", prefix: "src/" },
+              { file: "Views/Home/Index.cshtml", prefix: "src/" },
+              { file: "gitignore", prefix: "src/", rename: ".gitignore" },
+              { file: "global.json", prefix: "" }
             ];
                                     
             required.forEach(function(value, index, array) {
                
                fileSystem.createTemplate(
-                   this.templatePath(value),
-                   this.destinationPath('src/'.concat(value)),
+                   this.templatePath(value.file),
+                   this.destinationPath(value.prefix.concat(value.rename == null ? value.file : value.rename)),
                    tempVariables
                );
                 
