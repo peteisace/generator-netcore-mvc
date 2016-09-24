@@ -7,7 +7,8 @@ namespace <%= namespace %>.<%= appName%>
     public class HomeController : Controller
     {
         public async Task<IActionResult> Index()
-        {
+        {            
+            await Task.Yield();
             return this.View();
         }
     }

@@ -16,6 +16,10 @@ Tree.prototype.createStructure = function(bob) {
         "src/wwwroot/css",
         "src/wwwroot/scripts",
         "src/wwwroot/images",
+        "src/wwwroot/lib",
+        "src/publishExclude",
+        "src/publishExclude/sass",
+        "src/publishExclude/js",
         "src/Controllers"        
     ];
     

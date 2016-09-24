@@ -1,7 +1,6 @@
 'use strict';
 
 var generators = require('yeoman-generator');
-var requirejs = require('requirejs');
 var Tree = require('./tree.js');
 var FileSystem = require('./fileSystem.js');
 
@@ -26,17 +25,7 @@ module.exports = generators.Base.extend({
                 name: 'name',
                 message: 'Please enter the name of your app',
                 default: 'myApp'
-            },
-            {
-                type: 'option',
-                name: 'canInstallBower',
-                message: 'Do you wish to install bower, and create default bower.json?'                
-            },
-            {
-                type: 'option',
-                name: 'canInstallGulp',
-                message: 'Do you wish to install gulp and create default gulpfile?'
-            }
+            }                   
         ];                       
         
         // so now prompt
@@ -46,9 +35,7 @@ module.exports = generators.Base.extend({
                 
                 // set our variables
                 this.name = answers.name;
-                this.namespace = answers.namespace;
-                this.canInstallBower = answers.canInstallBower;
-                this.canInstallGulp = answers.canInstallGulp;
+                this.namespace = answers.namespace;                
                 
                 // and signal that we're done.
                 done();                
@@ -69,65 +56,7 @@ module.exports = generators.Base.extend({
                 this.destinationPath('src/project.json')
             );              
         },
-        
-        nodeTools: function() {
-            
-          this.dependentModules = [];
-          
-          // we're going to set up bower.
-          if(this.canInstallBower) {
-              
-              this.dependentModules.push('bower');
-              
-              // let's write the bowerrc
-              var bowerConfig = { directory: 'src/wwwroot/lib' };
-              var bowerInstall = 
-              {
-                name: this.name,
-                main: 'index.js',
-                ignore: [                    
-                    "src/node_modules",
-                    "bower_components",
-                    "src/wwwroot/lib",    
-                    "test",
-                    "tests"
-                ],
-                dependencies: {
-                    "jquery": "^2.2.4"
-                }
-              };
-              
-              // write the files.
-              this.fs.writeJSON('src/bower.json', bowerInstall);
-              this.fs.writeJSON('src/.bowerrc', bowerConfig);
-              
-          }
-          
-          if(this.canInstallGulp) {
-              
-              // add gulp to the list of targets
-              this.dependentModules.push('gulp');
-              this.dependentModules.push('gulp-livereload');
-              
-              // so then let's create our default gulp file.
-              this.fs.copyTpl(
-                  this.templatePath('gulpfile.js'),
-                  this.destinationPath('src/gulpfile.js')
-              );           
-          }
-          
-          if(this.dependentModules.length > 0) {
-                            
-              this.fs.copyTpl(
-                  this.templatePath('package.json'),
-                  this.destinationPath('src/package.json'), {
-                    appName: this.name      
-                  }
-              );
-              
-          }            
-        },
-                        
+                                           
         application: function() {
             // this is where we'll write the templates.
             
@@ -146,7 +75,13 @@ module.exports = generators.Base.extend({
               { file: "Controllers/HomeController.cs", prefix: "src/" },
               { file: "Views/Home/Index.cshtml", prefix: "src/" },
               { file: "gitignore", prefix: "src/", rename: ".gitignore" },
-              { file: "global.json", prefix: "" }
+              { file: "global.json", prefix: "" },
+              { file: "publishExclude/js/main.js", prefix: "src/"},
+              { file: "publishExclude/sass/styles.scss", prefix: "src/"},
+              { file: "package.json", prefix: "src/"},
+              { file: "gulpfile.js", prefix: "src/"},
+              { file: ".bowerrc", prefix: "src/"},
+              { file: "bower.json", prefix: "src/"}
             ];
                                     
             required.forEach(function(value, index, array) {
@@ -169,10 +104,30 @@ module.exports = generators.Base.extend({
     },
     
     install: function() {
-        
-        console.log("running npm install now...")              
-          
-        // install the stuff
-        this.npmInstall(this.dependentModules, { 'saveDev': true });                           
+
+        // need to install gulp if not already installed.
+        // and then the dependent modules:
+        //  SASS
+        //  browserify
+        //  uglify
+        var dependencies = [
+            "gulp",
+            "gulp-sass",
+            "gulp-browserify",
+            "gulp-uglify",
+            "gulp-sourcemaps",
+            "gulp-clean-css",
+            "gulp-uglify",
+            "gulp-rename",
+            "pump"            
+        ];
+
+        // let's change the current directory
+        var nodeDirectory = process.cwd() + '/src';
+        console.log("Trying to change to " + nodeDirectory);
+        process.chdir(nodeDirectory);
+
+        // throw the dependencies at the installation
+        this.npmInstall(dependencies, { 'saveDev': true });                
     }
 });
