@@ -31,7 +31,10 @@ gulp.task('browser-js', function(callback) {
 });
 
 // and now set up the watches
-
+gulp.task('watch-scripts', function() {
+    gulp.watch('publishExclude/sass/*.scss', ['sass']);
+    gulp.watch('publishExclude/js/*.js', ['browser-js']);
+});
 
 // let's have these guys as the default.
 gulp.task('default', ['sass', 'browser-js']);
